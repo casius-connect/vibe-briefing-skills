@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataCamp live build · skills as the spine</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root { --ink: #ffffff; }
+
+    html, body { background: #000; margin: 0; }
+
+    .reveal { font-family: 'Manrope', system-ui, sans-serif; }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section { padding: 0; height: 100%; }
+
+    /* ---- frame + background ---- */
+    .frame { position: absolute; inset: 0; overflow: hidden; }
+
+    .slide-bg { position: absolute; inset: -8%; filter: blur(34px); transform: scale(1.12); }
+    .grain {
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.30; mix-blend-mode: soft-light; pointer-events: none;
+    }
+
+    /* ---- colour modes (gradient mesh) ---- */
+    .mode-coral .slide-bg {
+      background:
+        radial-gradient(60% 80% at 15% 20%, #FF8E53 0%, transparent 60%),
+        radial-gradient(52% 72% at 85% 16%, #FF5E7E 0%, transparent 56%),
+        radial-gradient(72% 92% at 78% 86%, #C9457A 0%, transparent 60%),
+        radial-gradient(60% 80% at 28% 92%, #FF6B4A 0%, transparent 56%),
+        linear-gradient(135deg, #2a0f14, #3d1220);
+    }
+    .mode-sky .slide-bg {
+      background:
+        radial-gradient(60% 80% at 18% 22%, #4DA3FF 0%, transparent 60%),
+        radial-gradient(54% 74% at 82% 16%, #38BDF8 0%, transparent 56%),
+        radial-gradient(72% 92% at 80% 84%, #6366F1 0%, transparent 60%),
+        radial-gradient(60% 80% at 24% 90%, #22D3EE 0%, transparent 52%),
+        linear-gradient(135deg, #07101e, #0b1a2e);
+    }
+    .mode-violet .slide-bg {
+      background:
+        radial-gradient(60% 80% at 16% 20%, #A855F7 0%, transparent 60%),
+        radial-gradient(54% 74% at 84% 16%, #D946EF 0%, transparent 55%),
+        radial-gradient(72% 92% at 80% 84%, #7C3AED 0%, transparent 60%),
+        radial-gradient(60% 80% at 28% 92%, #8B5CF6 0%, transparent 52%),
+        linear-gradient(135deg, #140a22, #1d0f30);
+    }
+    .mode-seaglass .slide-bg {
+      background:
+        radial-gradient(60% 80% at 16% 20%, #2DD4BF 0%, transparent 60%),
+        radial-gradient(54% 74% at 84% 16%, #5EEAD4 0%, transparent 55%),
+        radial-gradient(72% 92% at 80% 84%, #0EA5A4 0%, transparent 60%),
+        radial-gradient(60% 80% at 28% 92%, #14B8A6 0%, transparent 52%),
+        linear-gradient(135deg, #04161a, #062826);
+    }
+    .mode-sage .slide-bg {
+      background:
+        radial-gradient(60% 80% at 16% 20%, #34D399 0%, transparent 60%),
+        radial-gradient(54% 74% at 84% 16%, #A3E635 0%, transparent 55%),
+        radial-gradient(72% 92% at 80% 84%, #10B981 0%, transparent 60%),
+        radial-gradient(60% 80% at 28% 92%, #22C55E 0%, transparent 52%),
+        linear-gradient(135deg, #07170f, #0c2417);
+    }
+
+    /* ---- content layer ---- */
+    .content { position: absolute; inset: 0; color: var(--ink); }
+
+    .glass {
+      backdrop-filter: blur(22px) saturate(1.2);
+      -webkit-backdrop-filter: blur(22px) saturate(1.2);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 24px 64px rgba(0,0,0,0.38);
+    }
+
+    .kicker {
+      position: absolute; left: 96px; top: 84px;
+      display: inline-flex; align-items: center; padding: 12px 24px; border-radius: 999px;
+      background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22);
+      font-family: 'JetBrains Mono', monospace; font-weight: 500;
+      font-size: 18px; letter-spacing: 0.16em; text-transform: uppercase;
+    }
+
+    .stepper {
+      position: absolute; right: 96px; top: 80px;
+      display: inline-flex; align-items: center; gap: 4px; padding: 10px 16px; border-radius: 999px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16);
+      font-family: 'JetBrains Mono', monospace; font-size: 17px;
+    }
+    .stepper .step { padding: 7px 15px; border-radius: 999px; opacity: 0.45; letter-spacing: 0.04em; }
+    .stepper .step.on { opacity: 1; background: rgba(255,255,255,0.24); box-shadow: 0 0 26px rgba(255,255,255,0.30); }
+    .stepper .sep { opacity: 0.35; padding: 0 2px; }
+
+    .hero { position: absolute; left: 96px; bottom: 104px; max-width: 1060px; }
+    .hero h1 {
+      font-family: 'Manrope', sans-serif; font-weight: 800;
+      font-size: 100px; line-height: 0.94; letter-spacing: -0.022em;
+      margin: 0; text-shadow: 0 4px 40px rgba(0,0,0,0.30);
+    }
+    .hero h1.tight { font-size: 84px; }
+    .hero .sub {
+      font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 38px; line-height: 1.2;
+      margin: 24px 0 0; color: rgba(255,255,255,0.90); max-width: 900px;
+    }
+
+    /* stage: glass-windows on the right */
+    .stage { position: absolute; right: 110px; top: 44%; transform: translateY(-50%); display: flex; gap: 34px; align-items: stretch; }
+
+    .window { border-radius: 18px; overflow: hidden; background: rgba(10,12,20,0.34); border: 1px solid rgba(255,255,255,0.16); }
+    .window .bar { display: flex; align-items: center; gap: 10px; padding: 14px 18px; background: rgba(255,255,255,0.07); border-bottom: 1px solid rgba(255,255,255,0.10); }
+    .window .bar .dot { width: 13px; height: 13px; border-radius: 50%; background: rgba(255,255,255,0.30); }
+    .window .bar .title { margin-left: 8px; font-family: 'JetBrains Mono', monospace; font-size: 18px; letter-spacing: 0.04em; color: rgba(255,255,255,0.72); }
+    .window pre { margin: 0; padding: 26px 30px; font-family: 'JetBrains Mono', monospace; font-weight: 400; font-size: 23px; line-height: 1.7; color: #fff; white-space: pre; tab-size: 2; }
+    .window pre .q { color: rgba(255,255,255,0.70); }
+    .window pre .done { color: #7CF0B0; }
+    .window pre .now { color: #FFD27A; }
+    .window .foot { padding: 12px 30px 20px; font-family: 'JetBrains Mono', monospace; font-size: 19px; color: rgba(255,255,255,0.70); }
+
+    /* command pill (pip install) */
+    .cmd {
+      position: absolute; display: inline-flex; align-items: center; gap: 12px;
+      padding: 16px 26px; border-radius: 14px;
+      background: rgba(6,8,14,0.5); border: 1px solid rgba(255,255,255,0.18);
+      font-family: 'JetBrains Mono', monospace; font-size: 26px; color: #fff;
+    }
+    .cmd .prompt { color: #7CF0B0; }
+
+    /* Oracle wordmark */
+    .brand-logo { position: absolute; right: 96px; top: 70px; height: 64px; opacity: 0.96; }
+
+    /* photo */
+    .photo { border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,0.25); }
+    .photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+    /* name card */
+    .namecard {
+      display: inline-flex; flex-direction: column; gap: 4px; padding: 18px 28px; border-radius: 16px;
+      background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22);
+    }
+    .namecard .nm { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 30px; }
+    .namecard .rl { font-family: 'JetBrains Mono', monospace; font-size: 18px; letter-spacing: 0.04em; color: rgba(255,255,255,0.82); }
+
+    /* QR card (solid white for scannability) */
+    .qr-card { display: inline-flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 16px 14px; border-radius: 18px; background: #ffffff; box-shadow: 0 24px 64px rgba(0,0,0,0.4); }
+    .qr-card img { width: 168px; height: 168px; display: block; }
+    .qr-card .lbl { font-family: 'JetBrains Mono', monospace; font-size: 15px; letter-spacing: 0.04em; color: #0a0f1c; }
+
+    /* close slide layout */
+    .close-left { position: absolute; left: 96px; bottom: 92px; max-width: 1020px; }
+    .close-left h1 { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 92px; line-height: 0.96; letter-spacing: -0.022em; margin: 0; }
+    .close-left .sub { font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 34px; line-height: 1.25; margin: 22px 0 0; color: rgba(255,255,255,0.90); max-width: 860px; }
+    .close-left .pills-row { margin-top: 36px; display: flex; gap: 16px; flex-wrap: wrap; }
+    .pill-label { padding: 14px 26px; border-radius: 999px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); font-family: 'Manrope', sans-serif; font-weight: 500; font-size: 25px; }
+    .close-right { position: absolute; right: 96px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 26px; }
+    .close-right .photo { width: 320px; height: 320px; }
+
+    .reveal .progress { color: rgba(255,255,255,0.7); height: 4px; }
+    .reveal .controls { color: rgba(255,255,255,0.55); }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- 1 · OPEN · Coral -->
+    <section class="mode-coral">
+      <div class="frame">
+        <div class="slide-bg"></div><div class="grain"></div>
+        <div class="content">
+          <div class="kicker glass">DATACAMP &middot; LIVE BUILD &middot; 23 JUN 2026</div>
+          <div class="photo glass" style="position:absolute; right:120px; top:50%; transform:translateY(-50%); width:440px; height:440px;">
+            <img src="assets/casius.jpg" alt="Casius">
+          </div>
+          <div class="namecard glass" style="position:absolute; right:120px; top:calc(50% + 250px);">
+            <span class="nm">Casius Lee</span>
+            <span class="rl">AI Developer Advocate &middot; Oracle</span>
+          </div>
+          <div class="hero">
+            <h1>Build an AI daily<br>briefing agent.</h1>
+            <p class="sub">You leave with your own.</p>
+            <p class="sub" style="font-size:30px; font-weight:500; opacity:0.86; margin-top:12px;">Plus a few skills to help you on your journey.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · WHAT WE BUILD · Seaglass -->
+    <section class="mode-seaglass">
+      <div class="frame">
+        <div class="slide-bg"></div><div class="grain"></div>
+        <div class="content">
+          <div class="kicker glass">TODAY&rsquo;S BUILD &middot; AI DAILY BRIEFING</div>
+          <img class="brand-logo" src="assets/oracle-logo.png" alt="Oracle">
+          <div class="hero" style="top:188px; bottom:auto; max-width:1120px;">
+            <h1 style="font-size:62px; line-height:1.0;">What we&rsquo;re<br>building today.</h1>
+            <p class="sub" style="font-size:28px; font-weight:500; opacity:0.88; margin-top:18px;">An AI daily briefing agent: it reads the feeds, summarises each story, and remembers everything in Oracle, so you or a coding agent can ask it later.</p>
+          </div>
+          <div class="window glass" style="position:absolute; left:50%; transform:translateX(-50%); top:486px; width:1480px;">
+            <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">ai-daily-briefing &middot; architecture</span></div>
+<pre style="font-size:21px; line-height:1.6;"><span class="q">SOURCES                          ORACLE AI DATABASE 26ai        CONSUMERS</span>
+reputable RSS feeds            ┌───────────────────────────┐      Flask briefing UI
+  Reuters · TechCrunch     <span class="now">──→</span> │ Oracle AI Agent Memory    │  <span class="now">─→</span>    what happened /
+  Hacker News · ArXiv          │ <span class="done">episodic · semantic</span>       │        why it matters
+                               │ <span class="done">procedural · working</span>      │      
+summarise, in-database         │                           │      CLI coding agent
+  Select AI                <span class="now">──→</span> │ vector search · 1024-dim  │  <span class="now">─→</span>    ask about any
+                               │ semantic recall           │        past story
+                               └───────────────────────────┘      </pre>
+            <div class="foot">Four memory types &middot; one Oracle database &middot; embeddings via OCI GenAI (Cohere)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · OPENING PROMPT · Violet -->
+    <section class="mode-violet">
+      <div class="frame">
+        <div class="slide-bg"></div><div class="grain"></div>
+        <div class="content">
+          <div class="kicker glass">THE OPENING PROMPT</div>
+          <div class="hero" style="top:188px; bottom:auto; max-width:1080px;">
+            <h1 style="font-size:56px; line-height:1.02;">The prompt we<br>start with.</h1>
+            <p class="sub" style="font-size:27px; font-weight:500; opacity:0.88; margin-top:16px;">We describe the app and think it through together, before any code.</p>
+          </div>
+          <div class="window glass" style="position:absolute; left:50%; transform:translateX(-50%); top:400px; width:1480px;">
+            <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">prompt &middot; ai-daily-briefing</span></div>
+<pre style="font-size:21px; line-height:1.45;">I want a personal AI daily briefing app, not a generic news summary,
+but a briefing written for my role: an AI Developer Advocate at Oracle.
+
+  · I add RSS feeds for the sources I care about.
+  · Each day it fetches them, summarises every story, and stores the
+    summaries so I can query them later.
+  · On demand it writes a digest: a top-line narrative, a daily theme,
+    and the five most significant stories.
+  · Each story: <span class="done">What happened</span> · <span class="done">Why it matters</span> · <span class="done">Your angle</span>
+    (my content, talk, and demo opportunities).
+  · Briefings are saved, so I can read past days.
+
+Help me design and build this. <span class="now">Let&rsquo;s talk it through first, not code:</span>
+<span class="q">  stack · storage + retrieval · writing "Your angle" · MVP first</span></pre>
+            <div class="foot">Intent first. The agent designs it with us before any code.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · ARCHITECTURE · Sky -->
+    <section class="mode-sky">
+      <div class="frame">
+        <div class="slide-bg"></div><div class="grain"></div>
+        <div class="content">
+          <div class="kicker glass">ORACLE AGENT MEMORY &middot; OAMP</div>
+          <img class="brand-logo" src="assets/oracle-logo.png" alt="Oracle">
+          <div class="stage" style="top:42%;">
+            <div class="window glass">
+              <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">agent_memory</span></div>
+<pre>EPISODIC     each story is an event   "a follow-up from Tuesday"
+SEMANTIC     the world model          the players, the trends
+PROCEDURAL   the house style          my voice, my analogies
+WORKING      today, in progress       the live thread</pre>
+              <div class="foot">All four live in one Oracle database.</div>
+            </div>
+          </div>
+          <div class="qr-card" style="position:absolute; right:96px; bottom:84px;">
+            <img src="assets/qr-oamp.svg" alt="OAMP blog QR">
+            <span class="lbl">Read the OAMP deep-dive</span>
+          </div>
+          <div class="hero" style="bottom:230px;">
+            <h1>Memory, in<br>four shapes.</h1>
+          </div>
+          <div class="cmd" style="left:96px; bottom:120px;"><span class="prompt">$</span> pip install oracle-agent-memory</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 · BRAINSTORM · Violet -->
+    <section class="mode-violet">
+      <div class="frame">
+        <div class="slide-bg"></div><div class="grain"></div>
+        <div class="content">
+          <div class="kicker glass">SKILL &middot; BRAINSTORMING</div>
+          <div class="stepper glass">
+            <span class="step on">Brainstorm</span><span class="sep">&rsaquo;</span>
+            <span class="step">Plan</span><span class="sep">&rsaquo;</span>
+            <span class="step">Execute</span><span class="sep">&rsaquo;</span>
+            <span class="step">Harden</span>
+          </div>
+          <div class="stage">
+            <div class="window glass">
+              <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">brainstorming</span></div>
+<pre>prompt &rsaquo; "a briefing that reads my feeds,
+          summarises each story, and
+          remembers everything"
+
+<span class="q">Q1  recall by keyword, or by meaning?</span>
+<span class="q">Q2  when two stories are one thread, know it?</span>
+<span class="q">Q3  whose voice should it speak in?</span></pre>
+              <div class="foot">Brainstorming aligns you and the agent.</div>
+            </div>
+          </div>
+          <div class="hero">
+            <h1>Start with<br>intent, not code.</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 · WRITE THE PLAN · Seaglass -->
+    <section class="mode-seaglass">
+      <div class="frame">
+        <div class="slide-bg"></div><div class="grain"></div>
+        <div class="content">
+          <div class="kicker glass">SKILL &middot; WRITING-PLANS</div>
+          <div class="stepper glass">
+            <span class="step">Brainstorm</span><span class="sep">&rsaquo;</span>
+            <span class="step on">Plan</span><span class="sep">&rsaquo;</span>
+            <span class="step">Execute</span><span class="sep">&rsaquo;</span>
+            <span class="step">Harden</span>
+          </div>
+          <div class="stage">
+            <div class="window glass">
+              <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">plan &middot; ai-briefing</span></div>
+<pre>[ ] 1  Fetch       pull the feed, list the stories
+[ ] 2  Summarise   what happened / why it matters
+[ ] 3  Remember    save + embed each briefing
+[ ] 4  Recall      search by meaning
+[ ] 5  Harden      Oracle wiring + the look</pre>
+            </div>
+          </div>
+          <div class="hero">
+            <h1 class="tight">Brainstorming answers<br>become a checklist.</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 · EXECUTE · Sage -->
+    <section class="mode-sage">
+      <div class="frame">
+        <div class="slide-bg"></div><div class="grain"></div>
+        <div class="content">
+          <div class="kicker glass">SKILL &middot; EXECUTING-PLANS</div>
+          <div class="stepper glass">
+            <span class="step">Brainstorm</span><span class="sep">&rsaquo;</span>
+            <span class="step">Plan</span><span class="sep">&rsaquo;</span>
+            <span class="step on">Execute</span><span class="sep">&rsaquo;</span>
+            <span class="step">Harden</span>
+          </div>
+          <div class="stage">
+            <div class="window glass">
+              <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">execute &middot; live</span></div>
+<pre><span class="done">[x] 1  Fetch       20 stories pulled</span>
+<span class="done">[x] 2  Summarise   Select AI, inside the database</span>
+<span class="done">[x] 3  Remember    embedded + saved, VECTOR(1024)</span>
+<span class="now">[&gt;] 4  Recall      searching by meaning...</span>
+[ ] 5  Harden</pre>
+            </div>
+          </div>
+          <div class="hero">
+            <h1>Build it,<br>checkpoint<br>by checkpoint.</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 · HARDEN · Sky · two windows -->
+    <section class="mode-sky">
+      <div class="frame">
+        <div class="slide-bg"></div><div class="grain"></div>
+        <div class="content">
+          <div class="kicker glass">PROJECT SKILLS &middot; BACKEND + FRONTEND</div>
+          <div class="stepper glass">
+            <span class="step">Brainstorm</span><span class="sep">&rsaquo;</span>
+            <span class="step">Plan</span><span class="sep">&rsaquo;</span>
+            <span class="step">Execute</span><span class="sep">&rsaquo;</span>
+            <span class="step on">Harden</span>
+          </div>
+          <div class="stage">
+            <div class="window glass">
+              <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">vibe-briefing-backend</span></div>
+<pre>&middot; Select AI profile + GenAI cred
+&middot; DBMS_VECTOR embeddings (1024)
+&middot; VECTOR_DISTANCE search</pre>
+              <div class="foot">holds the Oracle wiring firm</div>
+            </div>
+            <div class="window glass">
+              <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">frontend-design + flask-ui</span></div>
+<pre>&middot; Tailwind + DaisyUI cards
+&middot; what-happened / why-it-matters
+&middot; clean, readable search</pre>
+              <div class="foot">makes it a tool, not a toy</div>
+            </div>
+          </div>
+          <div class="hero">
+            <h1>The guardrails<br>that keep it real.</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 · CLOSE · Coral -->
+    <section class="mode-coral">
+      <div class="frame">
+        <div class="slide-bg"></div><div class="grain"></div>
+        <div class="content">
+          <div class="kicker glass">YOU LEAVE WITH THIS</div>
+          <div class="close-right">
+            <div class="photo glass"><img src="assets/casius.jpg" alt="Casius"></div>
+            <div style="display:flex; gap:20px; align-items:flex-start;">
+              <div class="qr-card">
+                <img src="assets/qr-linkedin.svg" alt="LinkedIn QR" style="width:140px; height:140px;">
+                <span class="lbl">LinkedIn</span>
+              </div>
+              <div class="qr-card">
+                <img src="assets/qr-instagram.svg" alt="Instagram QR" style="width:140px; height:140px;">
+                <span class="lbl">Instagram</span>
+              </div>
+            </div>
+          </div>
+          <div class="close-left">
+            <h1>Brainstorm. Plan.<br>Execute. Harden.</h1>
+            <p class="sub">The briefing is just today's example. The pattern works for any AI app that needs to remember.</p>
+            <div class="pills-row">
+              <span class="pill-label glass">Fork the Replit template</span>
+              <span class="pill-label glass">The six-skill bundle</span>
+              <span class="pill-label glass">@casius</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script>
+  Reveal.initialize({
+    width: 1920, height: 1080, margin: 0,
+    minScale: 0.2, maxScale: 2.0, center: false,
+    controls: true, progress: true, hash: true,
+    transition: 'fade', transitionSpeed: 'slow'
+  });
+</script>
+</body>
+</html>
