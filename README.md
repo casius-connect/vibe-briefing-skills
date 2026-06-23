@@ -12,6 +12,34 @@ Three things in here:
 
 ---
 
+## Before you start: an Oracle database (free)
+
+The backend skill wires the app to an **Oracle Autonomous Database** and to
+**OCI Generative AI**: Select AI writes the summaries inside the database, and
+Oracle AI Agent Memory stores and searches everything. Every AI call stays
+inside Oracle, so there are no third-party AI keys to manage.
+
+You do not need an existing Oracle account. Sign up for the **OCI Free Trial**
+and you get **US$300 in cloud credits for 30 days**, which is plenty to set all
+of this up and run it through the session:
+
+1. Create a free account at [oracle.com/cloud/free](https://www.oracle.com/cloud/free/).
+   You get the $300 trial credits, and an Always Free tier afterwards.
+2. Provision an **Autonomous Database** (choose Oracle AI Database 26ai). Select
+   AI and AI Vector Search are built in.
+3. Check that **OCI Generative AI** is available in your region (the skill uses
+   Cohere models through OCI GenAI). GenAI usage draws from your trial credits.
+4. Download the database **wallet** and set your connection details. The
+   `vibe-briefing-backend` skill has the exact wiring and the five-route
+   contract.
+
+Running the database in the Autonomous Database Free container image is possible,
+but the AI still calls OCI GenAI, so you would need an OCI account anyway and
+would have to swap the wallet connection for a local one. The free trial is the
+simpler route.
+
+---
+
 ## 1. Add the skills (Replit, Settings, Personalization)
 
 A skill is a short instruction file that teaches the Replit Agent how to do one
