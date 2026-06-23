@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="space-y-10">
+
+  <!-- Hero: confident heading, real copy, one primary action -->
+  <div class="space-y-4">
+    <span class="badge badge-primary badge-outline">New</span>
+    <h1 class="text-4xl md:text-5xl font-semibold leading-tight max-w-3xl">
+      A clear, confident headline that says what this does
+    </h1>
+    <p class="text-lg text-base-content/70 max-w-2xl">
+      One calm sentence explaining what the app does and who it is for.
+      Real copy, never placeholder text.
+    </p>
+    <div class="flex gap-3 pt-2">
+      <a href="#" class="btn btn-primary">Primary action</a>
+      <a href="#" class="btn btn-ghost">Secondary</a>
+    </div>
+  </div>
+
+  <!-- Asymmetric layout instead of three identical cards -->
+  <div class="grid gap-4 md:grid-cols-12">
+    <div class="card bg-base-100 shadow-sm md:col-span-7">
+      <div class="card-body">
+        <h3 class="card-title">The main thing</h3>
+        <p class="text-base-content/70">
+          Give the most important feature room to breathe. One bigger card
+          earns more attention than three equal ones.
+        </p>
+      </div>
+    </div>
+    <div class="card bg-base-100 shadow-sm md:col-span-5">
+      <div class="card-body">
+        <h3 class="card-title">A supporting thing</h3>
+        <p class="text-base-content/70">Smaller, secondary, still tidy.</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+{% endblock %}

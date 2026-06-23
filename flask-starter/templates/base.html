@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" data-theme="nord">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}My App{% endblock %}</title>
+
+  <!-- Prototype CDNs: fine for Replit. For production, move Tailwind + DaisyUI to a build step. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+
+  <!-- Two fonts only: one display (Fraunces), one body (Hanken Grotesk). Not Inter. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    body { font-family: 'Hanken Grotesk', sans-serif; }
+    h1, h2, h3 { font-family: 'Fraunces', serif; }
+  </style>
+</head>
+<body class="min-h-screen bg-base-200">
+  <header class="navbar bg-base-100 shadow-sm px-4">
+    <div class="flex-1">
+      <a href="/" class="text-xl font-semibold">My App</a>
+    </div>
+    <nav class="flex-none">
+      <ul class="menu menu-horizontal gap-1">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-4 py-10">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer footer-center p-6 text-base-content/60">
+    <aside><p>Built with Flask, Tailwind and DaisyUI.</p></aside>
+  </footer>
+</body>
+</html>
