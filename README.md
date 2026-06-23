@@ -103,3 +103,19 @@ Tailwind and DaisyUI to a proper build step.
 the opening prompt, Oracle Agent Memory, and the brainstorm, plan, execute,
 harden spine. Open it in a browser (clone the repo, then open the file) to walk
 back through the structure on your own.
+
+## Starter Prompt
+I want a personal AI daily briefing app, not a generic news summary, but a
+briefing written for my role: an AI Developer Advocate at Oracle.
+
+- I add RSS feeds for the sources I care about.
+- Each day it fetches them, summarises every story, and stores the summaries
+  so I can query them later.
+- On demand it writes a digest: a top-line narrative, a daily theme, and the
+  five most significant stories.
+- Each story: What happened, Why it matters, Your angle (my content, talk,
+  and demo opportunities).
+- Briefings are saved, so I can read past days.
+
+Help me design and build this. Let's talk it through first, not code:
+stack, storage and retrieval, writing "Your angle", MVP first.
